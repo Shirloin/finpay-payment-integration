@@ -1,0 +1,17 @@
+---
+description: Feature-first DDD domain responsibilities for the Spring Boot backend
+globs: backend/src/**/java/**/domain/*.java
+alwaysApply: false
+---
+
+# Domain Layer
+
+- Organize code by business feature, then layer: `<feature>/domain`, `<feature>/application`, `<feature>/infrastructure`.
+- Keep core business concepts and rules in `<feature>/domain`.
+- Keep models, value objects, aggregates, events, and DTOs in that feature domain.
+- Domain models may use JPA and Hibernate persistence annotations.
+- Request and response DTOs belong under `<feature>/domain/dto` and use Lombok classes.
+- Do not create domain repository interfaces; persistence uses the feature's infrastructure JPA repository directly.
+- Shared API errors and global exception handling belong in `shared/infrastructure/common`.
+- Domain objects use business nouns, such as `User`, `Order`, and `Payment`.
+- Put behavior that belongs to one aggregate on that aggregate; use domain services only for logic spanning aggregates.

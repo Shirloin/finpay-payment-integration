@@ -1,0 +1,20 @@
+---
+description: Web-layer responsibilities for the feature-first DDD backend
+globs: backend/src/**/java/**/web/**/*.java
+alwaysApply: false
+---
+
+# Web Layer
+
+- Put REST controllers in the top-level `web` package.
+- Use shared API errors and exception handling from `shared/infrastructure/common`.
+- Wrap every controller response in `ApiResponse<T>` with `data`, `message`, and `error`.
+- Put registration and other authentication endpoints in `AuthController`.
+- Controllers depend on feature application services and domain DTOs.
+- Keep controllers thin: validate input, invoke one use case, and return the mapped response.
+- Do not access JPA repositories or persistence entities from controllers.
+- Request and response DTOs belong under the owning feature's `domain` package.
+- Controllers receive response DTOs from services and must never map or return JPA entities.
+- Validate incoming requests with Jakarta Validation.
+- Never expose password hashes, JPA entities, or internal persistence details.
+- Return consistent HTTP status codes and JSON error responses.

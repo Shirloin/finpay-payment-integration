@@ -1,0 +1,19 @@
+---
+description: Feature-first DDD application responsibilities for the Spring Boot backend
+globs: backend/src/**/java/**/application/**/*.java
+alwaysApply: false
+---
+
+# Application Layer
+
+- Put application code under `<feature>/application`.
+- Application services orchestrate feature use cases and transactions.
+- Name application services `<Domain>Service`, for example `UserService`.
+- Put DTOs, models, and value objects under `<feature>/domain`, not application.
+- Application services may depend on domain models and the feature's infrastructure `JpaRepository`.
+- Validate business constraints before calling the repository.
+- Application services map saved entities to response DTOs before returning to controllers.
+- Never return JPA entities from an application service to the web layer.
+- Do not put HTTP, servlet, controller, or JPA entity mapping logic in this layer.
+- Keep business invariants in domain objects when they naturally belong to an aggregate.
+- Mark transaction boundaries on application service methods.

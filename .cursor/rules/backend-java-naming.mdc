@@ -1,0 +1,21 @@
+---
+description: Java and DDD naming conventions for backend classes
+globs: backend/src/**/*.java
+alwaysApply: false
+---
+
+# Backend Naming Conventions
+
+- Organize each bounded context as `<feature>/domain`, `<feature>/application`, and `<feature>/infrastructure`.
+- Domain objects are business nouns: `Product`, `User`, `Order`.
+- Application services use `<Domain>Service`: `ProductService`, `UserService`.
+- Create only Spring Data repositories named `<Domain>JpaRepository` extending `JpaRepository`.
+- Do not create repository contracts, repository implementations, or separate persistence entity classes.
+- DTO names always end with `DTO`: `CreateProductRequestDTO`, `UserResponseDTO`.
+- DTOs are Lombok classes under the owning feature's `domain` package.
+- Controllers use `<Domain>Controller`: `ProductController`, `UserController`.
+- Use Lombok for model/entity getters, setters, and constructors instead of handwritten boilerplate.
+- Name the stored credential field `password`; its value must still be a secure password hash.
+- Use Hibernate `@CreationTimestamp` for creation timestamps instead of assigning them manually.
+- Inject `BCryptPasswordHasher` directly; do not introduce a password-hasher interface.
+- Preserve usernames exactly as provided; do not trim, lowercase, or create normalized username fields unless requirements explicitly change.

@@ -1,0 +1,19 @@
+---
+description: Feature-first JPA infrastructure responsibilities for the Spring Boot backend
+globs: backend/src/**/java/**/infrastructure/**/*.java
+alwaysApply: false
+---
+
+# Infrastructure Layer
+
+- Put feature persistence adapters under `<feature>/infrastructure`.
+- Keep only the feature's Spring Data repository in its infrastructure package.
+- Do not create repository adapters, repository implementations, or duplicate persistence entities.
+- The JPA repository persists the domain model directly.
+- Every database repository uses Spring Data JPA.
+- Spring Data interfaces extend `JpaRepository` and use `<Domain>JpaRepository`.
+- Validate business constraints in the application service before calling a repository.
+- Put shared technical configuration under `shared/infrastructure`.
+- Put exception classes under `shared/infrastructure/exception`.
+- Put `ApiError`, `GlobalExceptionHandler`, and other shared technical utilities under `shared/infrastructure/common`.
+- Do not expose infrastructure persistence details through controllers or VOs.

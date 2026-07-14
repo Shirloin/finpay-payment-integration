@@ -3,8 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import { useRegisterMutation } from '@/hooks/useAuth'
 
@@ -41,26 +41,51 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" placeholder="yourname" autoComplete="username" {...register('username')} />
-        {errors.username && <p className="text-xs text-destructive">{errors.username.message}</p>}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input id="password" type="password" placeholder="••••••••" autoComplete="new-password" {...register('password')} />
-        {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
-        <Input id="confirmPassword" type="password" placeholder="••••••••" autoComplete="new-password" {...register('confirmPassword')} />
-        {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}
-      </div>
-      <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
-        {registerMutation.isPending && <Spinner />}
-        Create account
-      </Button>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FieldGroup>
+        <Field data-invalid={!!errors.username}>
+          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <Input
+            id="username"
+            placeholder="yourname"
+            autoComplete="username"
+            aria-invalid={!!errors.username}
+            {...register('username')}
+          />
+          <FieldError errors={[errors.username]} />
+        </Field>
+
+        <Field data-invalid={!!errors.password}>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            aria-invalid={!!errors.password}
+            {...register('password')}
+          />
+          <FieldError errors={[errors.password]} />
+        </Field>
+
+        <Field data-invalid={!!errors.confirmPassword}>
+          <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            aria-invalid={!!errors.confirmPassword}
+            {...register('confirmPassword')}
+          />
+          <FieldError errors={[errors.confirmPassword]} />
+        </Field>
+
+        <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+          {registerMutation.isPending && <Spinner />}
+          Create account
+        </Button>
+      </FieldGroup>
     </form>
   )
 }

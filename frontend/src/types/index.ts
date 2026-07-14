@@ -1,5 +1,11 @@
 export type PaymentStatus = 'SUCCESS' | 'FAILED'
 
+export interface ApiResponse<T> {
+  data: T
+  message: string
+  error: unknown | null
+}
+
 export interface User {
   id: string
   username: string

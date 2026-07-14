@@ -1,26 +1,23 @@
+import axios from 'axios'
+import { api } from '@/api/axios'
 import { delay } from '@/utils/payment'
 import { useAuthStore } from '@/store/auth.store'
-import type { AuthCredentials, User } from '@/types'
+import type { ApiResponse, AuthCredentials, User } from '@/types'
 
-// POST /register
 export async function registerRequest(payload: AuthCredentials): Promise<User> {
-  await delay(800)
-  const store = useAuthStore.getState()
-  if (store.findUser(payload.username)) {
-    throw new Error('Username already exists')
+  try {
+    const response = await api.post<ApiResponse<User>>('/auth/register', payload)
+    return response.data.data
+  } catch (error) {
+    if (axios.isAxiosError<ApiResponse<never>>(error)) {
+      throw new Error(error.response?.data?.message ?? 'Unable to create account')
+    }
+
+    throw error
   }
-  const user = {
-    id: crypto.randomUUID(),
-    username: payload.username,
-    password: payload.password,
-    createdAt: new Date().toISOString(),
-  }
-  store.registerUser(user)
-  const { password: _pw, ...safe } = user
-  return safe
 }
 
-// POST /login
+// Login remains simulated until the backend login endpoint is implemented.
 export async function loginRequest(payload: AuthCredentials): Promise<User> {
   await delay(800)
   const found = useAuthStore.getState().findUser(payload.username)
