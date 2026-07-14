@@ -1,26 +1,27 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { StoredUser, User } from '@/types'
+import { AUTH_STORAGE_KEY } from '@/constants/auth.constants'
+import type { AuthResponse, User } from '@/types'
 
-interface AuthState {
-  users: StoredUser[]
+type AuthState = {
+  token: string | null
   currentUser: User | null
-  registerUser: (user: StoredUser) => void
-  setCurrentUser: (user: User | null) => void
-  findUser: (username: string) => StoredUser | undefined
-  logout: () => void
+  setSession: (session: AuthResponse) => void
+  clearSession: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
-      users: [],
+    (set) => ({
+      token: null,
       currentUser: null,
-      registerUser: (user) => set((state) => ({ users: [...state.users, user] })),
-      setCurrentUser: (user) => set({ currentUser: user }),
-      findUser: (username) => get().users.find((u) => u.username.toLowerCase() === username.toLowerCase()),
-      logout: () => set({ currentUser: null }),
+      setSession: ({ accessToken, user }) => set({ token: accessToken, currentUser: user }),
+      clearSession: () => set({ token: null, currentUser: null }),
     }),
-    { name: 'finpay-auth' }
+    { name: AUTH_STORAGE_KEY }
   )
 )
+
+export function selectIsAuthenticated(state: AuthState): boolean {
+  return Boolean(state.token)
+}

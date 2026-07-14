@@ -14,4 +14,8 @@ public class BCryptPasswordHasher {
 	public String hash(String rawPassword) {
 		return passwordEncoder.encode(rawPassword);
 	}
+
+	public boolean matches(String rawPassword, String hashedPassword) {
+		return passwordEncoder.matches(rawPassword, hashedPassword);
+	}
 }

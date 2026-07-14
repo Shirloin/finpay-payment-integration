@@ -23,7 +23,7 @@ import {
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 
 export function Navbar() {
-  const { currentUser, logout } = useAuthStore()
+  const { currentUser, clearSession } = useAuthStore()
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
@@ -71,7 +71,7 @@ export function Navbar() {
               variant="destructive"
               onClick={() => {
                 setConfirmOpen(false)
-                logout()
+                clearSession()
               }}
             >
               Logout

@@ -5,7 +5,7 @@ import type { TopUpRequest, TopUpResponse } from '@/types'
 
 export function useTopUpMutation() {
   const qc = useQueryClient()
-  const userId = useAuthStore((s) => s.currentUser?.id)
+  const userId = useAuthStore((state) => state.currentUser?.id)
 
   return useMutation<TopUpResponse, Error, TopUpRequest>({
     mutationFn: (payload) => {

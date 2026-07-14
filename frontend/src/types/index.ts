@@ -12,8 +12,11 @@ export interface User {
   createdAt: string
 }
 
-export interface StoredUser extends User {
-  password: string
+export interface AuthResponse {
+  accessToken: string
+  tokenType: 'Bearer'
+  expiresAt: string
+  user: User
 }
 
 export interface Wallet {

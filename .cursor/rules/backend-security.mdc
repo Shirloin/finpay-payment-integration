@@ -1,0 +1,19 @@
+---
+description: JWT authentication and credential handling standards
+globs: backend/src/**/java/**/{security,web}/**/*.java
+alwaysApply: false
+---
+
+# Backend Security
+
+- Use stateless bearer authentication with Spring Security OAuth2 Resource Server.
+- Sign and validate JWTs with HS256 using the secret and expiry from environment configuration.
+- Permit only explicit public authentication endpoints such as register and login.
+- Require a valid bearer token for protected API endpoints.
+- Verify passwords with BCrypt and never return or log stored password values.
+- Return authentication results as DTOs inside `ApiResponse<T>`.
+- Keep login DTOs under `auth/domain/dto` and login orchestration in `auth/application/AuthService`.
+- Keep registration orchestration in the user module; do not put login methods in `UserService`.
+- Login returns distinct unauthorized messages for `Username not found` and `Incorrect password`.
+- Keep JWT creation and Spring Security configuration under `shared/infrastructure/security`.
+- Do not implement custom JWT parsing filters when Spring Security resource-server support is sufficient.

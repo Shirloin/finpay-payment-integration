@@ -4,7 +4,7 @@ import { TransactionHistory } from '@/components/payment/TransactionHistory'
 import { useAuthStore } from '@/store/auth.store'
 
 export default function DashboardPage() {
-  const user = useAuthStore((s) => s.currentUser)
+  const user = useAuthStore((state) => state.currentUser)
 
   return (
     <div className="space-y-6 container mx-auto">

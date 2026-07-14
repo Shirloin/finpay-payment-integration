@@ -1,12 +1,8 @@
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { RegisterForm } from '@/components/forms/RegisterForm'
-import { useAuthStore } from '@/store/auth.store'
 
 export default function RegisterPage() {
-  const currentUser = useAuthStore((s) => s.currentUser)
-  if (currentUser) return <Navigate to="/dashboard" replace />
-
   return (
     <Card>
       <CardHeader>

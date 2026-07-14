@@ -1,15 +1,20 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import type { Location } from 'react-router-dom'
 import { Spinner } from '@/components/ui/spinner'
 import { useAuthVerification } from '@/hooks/useAuthVerification'
 import { selectIsAuthenticated, useAuthStore } from '@/store/auth.store'
 
-export function ProtectedRoute() {
+interface GuestRouteState {
+  from?: Location
+}
+
+export function GuestRoute() {
   const isAuthenticated = useAuthStore(selectIsAuthenticated)
   const location = useLocation()
   const verification = useAuthVerification()
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />
+  if (!isAuthenticated || verification.isError) {
+    return <Outlet />
   }
 
   if (verification.isPending) {
@@ -20,9 +25,10 @@ export function ProtectedRoute() {
     )
   }
 
-  if (verification.isError) {
-    return <Navigate to="/login" replace state={{ from: location }} />
-  }
+  const previousLocation = (location.state as GuestRouteState | null)?.from
+  const destination = previousLocation
+    ? `${previousLocation.pathname}${previousLocation.search}${previousLocation.hash}`
+    : '/dashboard'
 
-  return <Outlet />
+  return <Navigate to={destination} replace />
 }
