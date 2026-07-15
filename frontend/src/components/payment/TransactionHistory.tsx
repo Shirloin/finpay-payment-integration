@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { EmptyState } from '@/components/common/EmptyState'
 import { useTransactions } from '@/hooks/useTransactions'
 import { formatCurrency, formatDate } from '@/utils/format'
+import { ContinuePaymentButton } from './ContinuePaymentButton'
 import { TransactionStatusBadge } from './TransactionStatusBadge'
 
 export function TransactionHistory() {
@@ -39,17 +40,23 @@ export function TransactionHistory() {
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Date</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.map((tx) => (
                     <TableRow key={tx.id}>
-                      <TableCell className="font-mono text-xs">{tx.referenceNumber}</TableCell>
+                      <TableCell className="font-mono text-xs">{tx.orderId}</TableCell>
                       <TableCell className="font-medium">{formatCurrency(tx.amount)}</TableCell>
                       <TableCell>
                         <TransactionStatusBadge status={tx.status} />
                       </TableCell>
                       <TableCell className="text-muted-foreground">{formatDate(tx.createdAt)}</TableCell>
+                      <TableCell className="text-right">
+                        {tx.status === 'PENDING' && (
+                          <ContinuePaymentButton orderId={tx.orderId} redirectUrl={tx.redirectUrl} />
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -61,12 +68,17 @@ export function TransactionHistory() {
                 <div key={tx.id} className="rounded-lg border p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-mono text-xs text-muted-foreground">{tx.referenceNumber}</p>
+                      <p className="font-mono text-xs text-muted-foreground">{tx.orderId}</p>
                       <p className="mt-1 text-lg font-semibold">{formatCurrency(tx.amount)}</p>
                     </div>
                     <TransactionStatusBadge status={tx.status} />
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">{formatDate(tx.createdAt)}</p>
+                  {tx.status === 'PENDING' && (
+                    <div className="mt-3">
+                      <ContinuePaymentButton orderId={tx.orderId} redirectUrl={tx.redirectUrl} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

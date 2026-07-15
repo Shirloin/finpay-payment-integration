@@ -1,4 +1,4 @@
-export type PaymentStatus = 'SUCCESS' | 'FAILED'
+export type OrderStatusValue = 'PENDING' | 'PAID' | 'FAIL'
 
 export interface ApiResponse<T> {
   data: T
@@ -19,20 +19,15 @@ export interface AuthResponse {
   user: User
 }
 
-export interface Wallet {
-  userId: string
-  balance: number
-}
-
 export interface Transaction {
   id: string
-  userId: string
+  orderId: string
   amount: number
-  status: PaymentStatus
+  status: OrderStatusValue
+  paymentMethod: string | null
+  paymentCode: string | null
+  redirectUrl: string | null
   createdAt: string
-  paymentMethod: string
-  referenceNumber: string
-  failureReason?: string
 }
 
 export interface TopUpRequest {
@@ -40,7 +35,22 @@ export interface TopUpRequest {
 }
 
 export interface TopUpResponse {
-  transaction: Transaction
+  orderId: string
+  amount: number
+  paymentCode: string | null
+  redirectUrl: string
+  expiryLink: string | null
+  status: OrderStatusValue
+  createdAt: string
+}
+
+export interface OrderStatus {
+  orderId: string
+  amount: number
+  status: OrderStatusValue
+  paymentMethod: string | null
+  paymentCode: string | null
+  redirectUrl: string | null
   balance: number
 }
 

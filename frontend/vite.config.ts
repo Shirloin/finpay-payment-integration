@@ -6,6 +6,9 @@ import path from 'node:path'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    host: true,
+    port: 5173,
+    allowedHosts: ['.ngrok-free.dev', '.ngrok.io', '.ngrok.app'],
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

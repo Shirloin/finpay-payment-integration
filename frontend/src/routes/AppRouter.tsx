@@ -4,6 +4,8 @@ import { DashboardLayout } from '@/layouts/DashboardLayout'
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
 import DashboardPage from '@/pages/DashboardPage'
+import PaymentSuccessPage from '@/pages/PaymentSuccessPage'
+import PaymentFailPage from '@/pages/PaymentFailPage'
 import { GuestRoute } from './GuestRoute'
 import { ProtectedRoute } from './ProtectedRoute'
 
@@ -25,7 +27,11 @@ const router = createBrowserRouter([
     children: [
       {
         element: <DashboardLayout />,
-        children: [{ path: '/dashboard', element: <DashboardPage /> }],
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/payment/success', element: <PaymentSuccessPage /> },
+          { path: '/payment/fail', element: <PaymentFailPage /> },
+        ],
       },
     ],
   },

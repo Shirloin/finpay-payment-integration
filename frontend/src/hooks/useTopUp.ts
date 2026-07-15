@@ -1,20 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { topUpRequest } from '@/api/topup'
-import { useAuthStore } from '@/store/auth.store'
 import type { TopUpRequest, TopUpResponse } from '@/types'
 
 export function useTopUpMutation() {
   const qc = useQueryClient()
-  const userId = useAuthStore((state) => state.currentUser?.id)
 
   return useMutation<TopUpResponse, Error, TopUpRequest>({
-    mutationFn: (payload) => {
-      if (!userId) throw new Error('Not authenticated')
-      return topUpRequest(userId, payload)
-    },
+    mutationFn: topUpRequest,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['balance', userId] })
-      qc.invalidateQueries({ queryKey: ['transactions', userId] })
+      qc.invalidateQueries({ queryKey: ['balance'] })
+      qc.invalidateQueries({ queryKey: ['transactions'] })
     },
   })
 }

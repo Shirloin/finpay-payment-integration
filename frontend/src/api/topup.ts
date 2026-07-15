@@ -1,46 +1,53 @@
-import { delay, generateReferenceNumber, randomPaymentResult } from '@/utils/payment'
-import { useTransactionStore } from '@/store/transaction.store'
-import { useWalletStore } from '@/store/wallet.store'
-import type { TopUpRequest, TopUpResponse, Transaction } from '@/types'
+import axios from 'axios'
+import { api } from '@/api/axios'
+import type { ApiResponse, OrderStatus, TopUpRequest, TopUpResponse, Transaction } from '@/types'
 
-// GET /balance
-export async function getBalanceRequest(userId: string): Promise<number> {
-  await delay(300)
-  return useWalletStore.getState().getBalance(userId)
-}
-
-// GET /transactions
-export async function getTransactionsRequest(userId: string): Promise<Transaction[]> {
-  await delay(300)
-  return useTransactionStore.getState().listByUser(userId)
-}
-
-// POST /topup
-export async function topUpRequest(userId: string, payload: TopUpRequest): Promise<TopUpResponse> {
-  await delay(1500)
-
-  const txStore = useTransactionStore.getState()
-  const walletStore = useWalletStore.getState()
-  const status = randomPaymentResult()
-  const seq = txStore.nextSequence()
-
-  const tx: Transaction = {
-    id: crypto.randomUUID(),
-    userId,
-    amount: payload.amount,
-    status,
-    createdAt: new Date().toISOString(),
-    paymentMethod: 'Sandbox Payment',
-    referenceNumber: generateReferenceNumber(seq),
-    failureReason: status === 'FAILED' ? 'Simulated payment failure' : undefined,
+function toApiError(error: unknown, fallbackMessage: string): Error {
+  if (!axios.isAxiosError<ApiResponse<unknown>>(error)) {
+    return error instanceof Error ? error : new Error(fallbackMessage)
   }
 
-  txStore.addTransaction(tx)
+  const responseMessage = error.response?.data?.message?.trim()
+  if (responseMessage) return new Error(responseMessage)
+  if (!error.response) {
+    return new Error('Unable to reach the server. Check your connection and try again.')
+  }
 
-  const balance =
-    status === 'SUCCESS'
-      ? walletStore.increaseBalance(userId, payload.amount)
-      : walletStore.getBalance(userId)
+  return new Error(fallbackMessage)
+}
 
-  return { transaction: tx, balance }
+export async function getBalanceRequest(): Promise<number> {
+  try {
+    const response = await api.get<ApiResponse<number>>('/balance')
+    return response.data.data
+  } catch (error) {
+    throw toApiError(error, 'Unable to load balance')
+  }
+}
+
+export async function getTransactionsRequest(): Promise<Transaction[]> {
+  try {
+    const response = await api.get<ApiResponse<Transaction[]>>('/transactions')
+    return response.data.data
+  } catch (error) {
+    throw toApiError(error, 'Unable to load transactions')
+  }
+}
+
+export async function topUpRequest(payload: TopUpRequest): Promise<TopUpResponse> {
+  try {
+    const response = await api.post<ApiResponse<TopUpResponse>>('/topup', payload)
+    return response.data.data
+  } catch (error) {
+    throw toApiError(error, 'Unable to initiate top up')
+  }
+}
+
+export async function getOrderStatusRequest(orderId: string): Promise<OrderStatus> {
+  try {
+    const response = await api.get<ApiResponse<OrderStatus>>(`/orders/${orderId}`)
+    return response.data.data
+  } catch (error) {
+    throw toApiError(error, 'Unable to load payment status')
+  }
 }
